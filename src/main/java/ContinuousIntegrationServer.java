@@ -116,15 +116,15 @@ public class ContinuousIntegrationServer extends AbstractHandler
             listBuilds(response);
         } else if (target.startsWith("/builds/")) {
             showBuildDetails(target, response);
+        } else if ("/build-status".equals(target)) {
+            System.out.println("Target : "+ target);
+            getBuildStatus(response);
         } else {
             // Handle other requests or show default message
             response.getWriter().println("CI Server is running. Use /builds to list all builds.");
         }
-
-        if ("/build-status".equals(target)) {
-            System.out.println("Target : "+ target);
-            getBuildStatus(response);
-        }
+        
+        
     }  
 
     /**
