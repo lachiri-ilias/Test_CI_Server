@@ -1,4 +1,4 @@
-![Build Status](https://img.shields.io/endpoint?url=https://dd30-2001-6b0-1-1e30-250-56ff-feb6-5974.ngrok-free.app/build-status)
+![Build Status](https://img.shields.io/endpoint?url=https%3A%2F%2Fdd30-2001-6b0-1-1e30-250-56ff-feb6-5974.ngrok-free.app%2Fbuild-status)
 
 
 
