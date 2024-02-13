@@ -324,11 +324,22 @@ public class ContinuousIntegrationServer extends AbstractHandler
 
 
     private void getBuildStatus(String repoName, HttpServletResponse response) throws IOException {
-        boolean isBuildSuccessful = checkBuildStatusForRepo(repoName);
-        
-        String status = isBuildSuccessful ? "Passing" : "Failing";
-        String color = isBuildSuccessful ? "brightgreen" : "red";
-        
+        String status = "Unknown";
+        String color = "lightgrey";
+        int isBuildSuccessful = checkBuildStatusForRepo(repoName);
+
+        if (isBuildSuccessful==1) {
+            status = "Passing";
+            color = "brightgreen";
+        } else if (isBuildSuccessful==0) {
+            status = "Failing";
+            color = "red";
+        } else {
+            status = "Compiling";
+            color = "yellow";
+            
+        }
+               
         String jsonResponse = String.format(
             "{\"schemaVersion\": 1, \"label\": \"Build\", \"message\": \"%s\", \"color\": \"%s\"}",
             status, color);
@@ -340,18 +351,18 @@ public class ContinuousIntegrationServer extends AbstractHandler
         out.flush();
     }
     
-    private boolean checkBuildStatusForRepo(String repoName) {
+    private int checkBuildStatusForRepo(String repoName) {
         File buildHistoryDir = new File("../build_history");
         if (!buildHistoryDir.exists() || !buildHistoryDir.isDirectory()) {
             System.err.println("Build history directory does not exist or is not a directory.");
-            return false;
+            return -1;
         }
     
         File[] matchingDirs = buildHistoryDir.listFiles((dir, name) -> name.startsWith(repoName) && new File(dir, name).isDirectory());
     
         if (matchingDirs == null || matchingDirs.length == 0) {
             System.out.println("No matching build directories found for repository: " + repoName);
-            return false;
+            return -1;
         }
     
         Arrays.sort(matchingDirs, Comparator.comparingLong(File::lastModified).reversed());
@@ -361,7 +372,7 @@ public class ContinuousIntegrationServer extends AbstractHandler
         File buildSummaryFile = new File(latestBuildDir, "build_summary.json");
         if (!buildSummaryFile.exists()) {
             System.err.println("Build summary file does not exist in the latest build directory.");
-            return false;
+            return -1;
         }
     
         try {
@@ -369,11 +380,17 @@ public class ContinuousIntegrationServer extends AbstractHandler
             JsonObject buildSummaryJson = JsonParser.parseString(content).getAsJsonObject();
             String buildStatus = buildSummaryJson.has("buildStatus") ? buildSummaryJson.get("buildStatus").getAsString() : "";
     
-            return "SUCCESS".equals(buildStatus);
+            if ("SUCCESS".equals(buildStatus)){
+                return 1;
+            } else if ("FAILURE".equals(buildStatus)){
+                return 0;
+            } else {
+                return -1;
+            }
         } catch (Exception e) {
             System.err.println("Error reading or parsing build summary file: " + e.getMessage());
             e.printStackTrace();
-            return false;
+            return -1;
         }
     }
     
