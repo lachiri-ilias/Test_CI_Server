@@ -1,3 +1,7 @@
+![Build Status](https://img.shields.io/endpoint?url=https://abc1234.ngrok.io/build-status)
+
+
+
 # Assignment 2: Continuous Integration (DD2480)
 Repository for DD2480 Continuous Integration assignment - group 28.
 
