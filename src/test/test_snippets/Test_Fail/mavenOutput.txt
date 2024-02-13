@@ -1,0 +1,54 @@
+[[1;34mINFO[m] Scanning for projects...
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m-----------------------< [0;36mcom.example:my-project[0;1m >-----------------------[m
+[[1;34mINFO[m] [1mBuilding My Project 1.0.0[m
+[[1;34mINFO[m] [1m--------------------------------[ jar ]---------------------------------[m
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m--- [0;32mmaven-clean-plugin:2.5:clean[m [1m(default-clean)[m @ [36mmy-project[0;1m ---[m
+[[1;34mINFO[m] Deleting /home/lachiri/Documents/KTH/Fond_Soft_Eng/ci_server/src/test/test_snippets/Test_Fail/target
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m--- [0;32mmaven-resources-plugin:2.6:resources[m [1m(default-resources)[m @ [36mmy-project[0;1m ---[m
+[[1;33mWARNING[m] Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+[[1;34mINFO[m] skip non existing resourceDirectory /home/lachiri/Documents/KTH/Fond_Soft_Eng/ci_server/src/test/test_snippets/Test_Fail/src/main/resources
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m--- [0;32mmaven-compiler-plugin:3.8.1:compile[m [1m(default-compile)[m @ [36mmy-project[0;1m ---[m
+[[1;34mINFO[m] Changes detected - recompiling the module!
+[[1;33mWARNING[m] File encoding has not been set, using platform encoding UTF-8, i.e. build is platform dependent!
+[[1;34mINFO[m] Compiling 1 source file to /home/lachiri/Documents/KTH/Fond_Soft_Eng/ci_server/src/test/test_snippets/Test_Fail/target/classes
+[[1;34mINFO[m] -------------------------------------------------------------
+[[1;31mERROR[m] COMPILATION ERROR : 
+[[1;34mINFO[m] -------------------------------------------------------------
+[[1;31mERROR[m] /home/lachiri/Documents/KTH/Fond_Soft_Eng/ci_server/src/test/test_snippets/Test_Fail/src/main/java/Test_Fail.java:[3,29] package org.junit.jupiter.api does not exist
+[[1;31mERROR[m] /home/lachiri/Documents/KTH/Fond_Soft_Eng/ci_server/src/test/test_snippets/Test_Fail/src/main/java/Test_Fail.java:[5,36] package org.junit.jupiter.api does not exist
+[[1;31mERROR[m] /home/lachiri/Documents/KTH/Fond_Soft_Eng/ci_server/src/test/test_snippets/Test_Fail/src/main/java/Test_Fail.java:[5,1] static import only from classes and interfaces
+[[1;31mERROR[m] /home/lachiri/Documents/KTH/Fond_Soft_Eng/ci_server/src/test/test_snippets/Test_Fail/src/main/java/Test_Fail.java:[11,6] cannot find symbol
+  symbol:   class Test
+  location: class test_snippets.Test_Fail
+[[1;31mERROR[m] /home/lachiri/Documents/KTH/Fond_Soft_Eng/ci_server/src/test/test_snippets/Test_Fail/src/main/java/Test_Fail.java:[13,9] cannot find symbol
+  symbol:   method assertEquals(int,int)
+  location: class test_snippets.Test_Fail
+[[1;34mINFO[m] 5 errors 
+[[1;34mINFO[m] -------------------------------------------------------------
+[[1;34mINFO[m] [1m------------------------------------------------------------------------[m
+[[1;34mINFO[m] [1;31mBUILD FAILURE[m
+[[1;34mINFO[m] [1m------------------------------------------------------------------------[m
+[[1;34mINFO[m] Total time:  0.539 s
+[[1;34mINFO[m] Finished at: 2024-02-13T11:59:40+01:00
+[[1;34mINFO[m] [1m------------------------------------------------------------------------[m
+[[1;31mERROR[m] Failed to execute goal [32morg.apache.maven.plugins:maven-compiler-plugin:3.8.1:compile[m [1m(default-compile)[m on project [36mmy-project[m: [1;31mCompilation failure[m: Compilation failure: 
+[[1;31mERROR[m] /home/lachiri/Documents/KTH/Fond_Soft_Eng/ci_server/src/test/test_snippets/Test_Fail/src/main/java/Test_Fail.java:[3,29] package org.junit.jupiter.api does not exist
+[[1;31mERROR[m] /home/lachiri/Documents/KTH/Fond_Soft_Eng/ci_server/src/test/test_snippets/Test_Fail/src/main/java/Test_Fail.java:[5,36] package org.junit.jupiter.api does not exist
+[[1;31mERROR[m] /home/lachiri/Documents/KTH/Fond_Soft_Eng/ci_server/src/test/test_snippets/Test_Fail/src/main/java/Test_Fail.java:[5,1] static import only from classes and interfaces
+[[1;31mERROR[m] /home/lachiri/Documents/KTH/Fond_Soft_Eng/ci_server/src/test/test_snippets/Test_Fail/src/main/java/Test_Fail.java:[11,6] cannot find symbol
+[[1;31mERROR[m]   symbol:   class Test
+[[1;31mERROR[m]   location: class test_snippets.Test_Fail
+[[1;31mERROR[m] /home/lachiri/Documents/KTH/Fond_Soft_Eng/ci_server/src/test/test_snippets/Test_Fail/src/main/java/Test_Fail.java:[13,9] cannot find symbol
+[[1;31mERROR[m]   symbol:   method assertEquals(int,int)
+[[1;31mERROR[m]   location: class test_snippets.Test_Fail
+[[1;31mERROR[m] -> [1m[Help 1][m
+[[1;31mERROR[m] 
+[[1;31mERROR[m] To see the full stack trace of the errors, re-run Maven with the [1m-e[m switch.
+[[1;31mERROR[m] Re-run Maven using the [1m-X[m switch to enable full debug logging.
+[[1;31mERROR[m] 
+[[1;31mERROR[m] For more information about the errors and possible solutions, please read the following articles:
+[[1;31mERROR[m] [1m[Help 1][m http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException
