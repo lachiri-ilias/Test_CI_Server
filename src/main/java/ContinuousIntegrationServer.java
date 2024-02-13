@@ -120,7 +120,12 @@ public class ContinuousIntegrationServer extends AbstractHandler
             // Handle other requests or show default message
             response.getWriter().println("CI Server is running. Use /builds to list all builds.");
         }
-    }
+
+        if ("/build-status".equals(target)) {
+            getBuildStatus(response);
+            return; // Stop further processing
+        }
+    }  
 
     /**
      * This function transforms a string in json format into a String,Object map.
@@ -308,6 +313,29 @@ public class ContinuousIntegrationServer extends AbstractHandler
         }   
     }
 
+
+    private void getBuildStatus(HttpServletResponse response) throws IOException {
+        boolean isBuildSuccessful = false; 
+        String status = isBuildSuccessful ? "passing" : "failing";
+        String color = isBuildSuccessful ? "brightgreen" : "red";
+        
+        Map<String, String> badgeResponse = Map.of(
+            "schemaVersion", "1",
+            "label", "build",
+            "message", status,
+            "color", color
+        );
+        Gson gson = new Gson();
+        String jsonResponse = gson.toJson(badgeResponse);
+        
+        response.setContentType("application/json");
+        response.setStatus(HttpServletResponse.SC_OK);
+        PrintWriter out = response.getWriter();
+        out.print(jsonResponse);
+        out.flush();
+    }
+
+    
     /**
      * This function sends an email notification with the build result.
      * @param toEmail - The email address to send the notification to
