@@ -258,6 +258,8 @@ public class ContinuousIntegrationServer extends AbstractHandler
             System.out.println("Reading Maven output file: " + mavenOutputFile);
             boolean errorEncountered = false;
             while ((line = reader.readLine()) != null) {
+                System.out.println("line : "+line);
+
                 if (line.contains("[ERROR]")) {
                     errorEncountered = true;
                     errorLines.add(line);
