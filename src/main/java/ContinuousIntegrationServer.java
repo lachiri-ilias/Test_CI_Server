@@ -122,8 +122,8 @@ public class ContinuousIntegrationServer extends AbstractHandler
         }
 
         if ("/build-status".equals(target)) {
+            System.out.println("Target : "+ target);
             getBuildStatus(response);
-            return; // Stop further processing
         }
     }  
 
@@ -327,7 +327,7 @@ public class ContinuousIntegrationServer extends AbstractHandler
         );
         Gson gson = new Gson();
         String jsonResponse = gson.toJson(badgeResponse);
-        
+        System.out.println("jsonResponse: " + jsonResponse);
         response.setContentType("application/json");
         response.setStatus(HttpServletResponse.SC_OK);
         PrintWriter out = response.getWriter();
