@@ -66,7 +66,7 @@ public class ContinuousIntegrationServer extends AbstractHandler
     // Directory to store cloned repositories and build summaries. It's located in the server.
     public final  String repoDir = "../build_history"; 
 
-    public boolean isBuildSuccessful = false;
+    private boolean isBuildSuccessful = false;
      
     @Override
     /**
@@ -318,7 +318,7 @@ public class ContinuousIntegrationServer extends AbstractHandler
 
 
     private void getBuildStatus(HttpServletResponse response) throws IOException {
-         
+        System.out.println("status: " + isBuildSuccessful);
         String status = isBuildSuccessful ? "passing" : "failing";
         String color = isBuildSuccessful ? "brightgreen" : "red";
         
