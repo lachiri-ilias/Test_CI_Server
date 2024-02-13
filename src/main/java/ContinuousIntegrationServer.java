@@ -6,17 +6,21 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.util.Properties;
+
 
 import javax.mail.Message;
 import javax.mail.Multipart;
@@ -27,14 +31,15 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
-import java.util.Properties;
-
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.Request;
@@ -65,8 +70,6 @@ public class ContinuousIntegrationServer extends AbstractHandler
 
     // Directory to store cloned repositories and build summaries. It's located in the server.
     public final  String repoDir = "../build_history"; 
-
-    private boolean isBuildSuccessful = false;
      
     @Override
     /**
@@ -118,8 +121,9 @@ public class ContinuousIntegrationServer extends AbstractHandler
             listBuilds(response);
         } else if (target.startsWith("/builds/")) {
             showBuildDetails(target, response);
-        } else if ("/build-status".equals(target)) {
-            getBuildStatus(response);
+        } else if ("/build-status/".equals(target)) {
+            
+            getBuildStatus(extractRepositoryName(payload),response);
         } else {
             // Handle other requests or show default message
             response.getWriter().println("CI Server is running. Use /builds to list all builds.");
@@ -287,10 +291,8 @@ public class ContinuousIntegrationServer extends AbstractHandler
             // If errors were encountered, mark the summary as a failure
             if (errorEncountered) {
                 summary.put("buildStatus", "FAILURE");
-                isBuildSuccessful = false;
             } else {
                 summary.put("buildStatus", "SUCCESS");
-                isBuildSuccessful = true;
             }
 
 
@@ -317,9 +319,10 @@ public class ContinuousIntegrationServer extends AbstractHandler
     }
 
 
-    private void getBuildStatus(HttpServletResponse response) throws IOException {
-        System.out.println("status: " + isBuildSuccessful);
-        String status = isBuildSuccessful ? "passing" : "failing";
+    private void getBuildStatus(String repoName, HttpServletResponse response) throws IOException {
+        boolean isBuildSuccessful = checkBuildStatusForRepo(repoName);
+        
+        String status = isBuildSuccessful ? "Passing" : "Failing";
         String color = isBuildSuccessful ? "brightgreen" : "red";
         
         String jsonResponse = String.format(
@@ -332,6 +335,46 @@ public class ContinuousIntegrationServer extends AbstractHandler
         out.print(jsonResponse);
         out.flush();
     }
+    
+    private boolean checkBuildStatusForRepo(String repoName) {
+        File buildHistoryDir = new File("../build_history");
+        if (!buildHistoryDir.exists() || !buildHistoryDir.isDirectory()) {
+            System.err.println("Build history directory does not exist or is not a directory.");
+            return false;
+        }
+    
+        File[] matchingDirs = buildHistoryDir.listFiles((dir, name) -> name.startsWith(repoName) && new File(dir, name).isDirectory());
+    
+        if (matchingDirs == null || matchingDirs.length == 0) {
+            System.out.println("No matching build directories found for repository: " + repoName);
+            return false;
+        }
+    
+        Arrays.sort(matchingDirs, Comparator.comparingLong(File::lastModified).reversed());
+        File latestBuildDir = matchingDirs[0];
+        System.out.println("Latest build directory for " + repoName + ": " + latestBuildDir.getName());
+    
+        File buildSummaryFile = new File(latestBuildDir, "build_summary.json");
+        if (!buildSummaryFile.exists()) {
+            System.err.println("Build summary file does not exist in the latest build directory.");
+            return false;
+        }
+    
+        try {
+            String content = new String(Files.readAllBytes(Paths.get(buildSummaryFile.getPath())));
+            JsonObject buildSummaryJson = JsonParser.parseString(content).getAsJsonObject();
+            String buildStatus = buildSummaryJson.has("buildStatus") ? buildSummaryJson.get("buildStatus").getAsString() : "";
+    
+            return "SUCCESS".equals(buildStatus);
+        } catch (Exception e) {
+            System.err.println("Error reading or parsing build summary file: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+
+ 
 
     
     /**
