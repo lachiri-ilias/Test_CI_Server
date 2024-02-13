@@ -65,6 +65,8 @@ public class ContinuousIntegrationServer extends AbstractHandler
 
     // Directory to store cloned repositories and build summaries. It's located in the server.
     public final  String repoDir = "../build_history"; 
+
+    public boolean isBuildSuccessful = false;
      
     @Override
     /**
@@ -285,8 +287,10 @@ public class ContinuousIntegrationServer extends AbstractHandler
             // If errors were encountered, mark the summary as a failure
             if (errorEncountered) {
                 summary.put("buildStatus", "FAILURE");
+                isBuildSuccessful = false;
             } else {
                 summary.put("buildStatus", "SUCCESS");
+                isBuildSuccessful = true;
             }
 
 
@@ -314,21 +318,14 @@ public class ContinuousIntegrationServer extends AbstractHandler
 
 
     private void getBuildStatus(HttpServletResponse response) throws IOException {
-        boolean isBuildSuccessful = false; 
+         
         String status = isBuildSuccessful ? "passing" : "failing";
         String color = isBuildSuccessful ? "brightgreen" : "red";
         
-        // Map<String, String> badgeResponse = Map.of(
-        //     "schemaVersion", "1",
-        //     "label", "build",
-        //     "message", status,
-        //     "color", color
-        // );
-        // Gson gson = new Gson();
-        // String jsonResponse = gson.toJson(badgeResponse);
+        String jsonResponse = String.format(
+            "{\"schemaVersion\": 1, \"label\": \"Build\", \"message\": \"%s\", \"color\": \"%s\"}",
+            status, color);
 
-        String jsonResponse = "{\"schemaVersion\": 1, \"label\": \"build\", \"message\": \"passing\", \"color\": \"brightgreen\"}";
-        System.out.println("jsonResponse: " + jsonResponse);
         response.setContentType("application/json");
         response.setStatus(HttpServletResponse.SC_OK);
         PrintWriter out = response.getWriter();
