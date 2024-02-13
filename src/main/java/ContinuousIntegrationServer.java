@@ -121,7 +121,7 @@ public class ContinuousIntegrationServer extends AbstractHandler
             listBuilds(response);
         } else if (target.startsWith("/builds/")) {
             showBuildDetails(target, response);
-        } else if ("/build-status/".equals(target)) {
+        } else if (target.startsWith("/build-status/")) {
             String repoName = target.substring("/build-status/".length());
             if (repoName != null && !repoName.isEmpty()) {
                 getBuildStatus(repoName, response);
