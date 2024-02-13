@@ -122,8 +122,12 @@ public class ContinuousIntegrationServer extends AbstractHandler
         } else if (target.startsWith("/builds/")) {
             showBuildDetails(target, response);
         } else if ("/build-status/".equals(target)) {
-            
-            getBuildStatus(extractRepositoryName(payload),response);
+            String repoName = target.substring("/build-status/".length());
+            if (repoName != null && !repoName.isEmpty()) {
+                getBuildStatus(repoName, response);
+            } else {
+                response.getWriter().println("Repository name is missing in the request URL.");
+            }
         } else {
             // Handle other requests or show default message
             response.getWriter().println("CI Server is running. Use /builds to list all builds.");
